@@ -1,7 +1,5 @@
 import Data.List
 import Data.Ord
-import System.Console.Terminfo.Cursor (rowAddress)
-import Language.Haskell.TH (report)
 
 part1 = do
     contents <- readFile "input"

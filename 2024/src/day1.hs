@@ -1,5 +1,4 @@
 import Data.List
-import Control.Arrow (Arrow(second))
 
 part1 = do
     contents <- readFile "input"
