@@ -1,0 +1,12 @@
+name: adventOfCode2024
+
+dependencies:
+  - base >= 4.7 && < 5
+  - containers
+  - regex-pcre-builtin
+  - text
+
+library:
+  source-dirs: src
+  ghc-options:
+    - -Wall

@@ -1,18 +1,28 @@
+module Day02 (main, part1, part2) where
+
 import Data.List
 import Data.Ord
 
+main :: IO ()
+main = do
+    part1
+    part2
+
+part1 :: IO ()
 part1 = do
     contents <- readFile "input"
     let rows = map (map readInt . words) (lines contents)
+    print "part 1:"
     print (length (filter isSafe rows))
 
+part2 :: IO ()
 part2 = do
     contents <- readFile "input"
     let rows = map (map readInt . words) (lines contents)
     let safe = filter isSafe rows
     let unsafeReports = filter (not . isSafe) rows
     let dampened = filter canDampen unsafeReports
-
+    print "part 2:"
     print (length safe + length dampened)
 
 
