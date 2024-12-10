@@ -16,6 +16,9 @@ class Day03(
     companion object {
         const val DIGIT_ARGS = "\\d{1,3},\\d{1,3}"
         const val MUL_OPERATION = "mul\\($DIGIT_ARGS\\)"
+        const val DO_OPERATION = "do\\(\\)"
+        const val DONT_OPERATION = "don't\\(\\)"
+        const val MUL_DO_DONT = "$MUL_OPERATION|$DO_OPERATION|$DONT_OPERATION"
     }
 
 
@@ -34,7 +37,27 @@ class Day03(
         }
         return sum
     }
-    fun part2() : String {
-        return ""
+    fun part2() : Int {
+        var sum = 0
+        val mulDoDontRegex = Regex(MUL_DO_DONT)
+        val digitRegex = Regex(DIGIT_ARGS)
+        val doRegex = Regex(DO_OPERATION)
+        val dontRegex = Regex(DONT_OPERATION)
+        var enabled = true
+        input.forEach { line ->
+            mulDoDontRegex.findAll(line).forEach { mulDoDont ->
+                if (doRegex.matches(mulDoDont.value)) {
+                    enabled = true
+                } else if (dontRegex.matches(mulDoDont.value)){
+                    enabled = false
+                } else if (enabled) {
+                    val digits = digitRegex.find(mulDoDont.value)?.value?.split(',')?.map { it.toInt() }
+                    if (digits != null && digits.size == 2) {
+                        sum += digits[0] * digits[1]
+                    }
+                }
+            }
+        }
+        return sum
     }
 }
