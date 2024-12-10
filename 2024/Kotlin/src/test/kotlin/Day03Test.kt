@@ -1,4 +1,4 @@
-import com.github.justwannafly.Day03
+import com.github.justwannafly.days.Day03
 import org.junit.jupiter.api.Test
 
 class Day03Test {

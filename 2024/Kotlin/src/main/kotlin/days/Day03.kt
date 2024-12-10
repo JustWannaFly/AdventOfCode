@@ -1,8 +1,10 @@
-package com.github.justwannafly
+package com.github.justwannafly.days
+
+import com.github.justwannafly.Utilities
 
 fun main() {
-    println("---${Constants.INTRO} Day 03---")
-    val input: List<String> = Constants.readResource("03")
+    println("---${Utilities.INTRO} Day 03---")
+    val input: List<String> = Utilities.readResource("03")
         ?: error("unable to read input")
     val day3 = Day03(input)
     println("Part 1: ${day3.part1()}")
