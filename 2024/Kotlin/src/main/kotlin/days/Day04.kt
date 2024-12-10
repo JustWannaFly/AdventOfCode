@@ -15,11 +15,8 @@ class Day04(input: List<String>,
 ) {
     private val data: TwoDMap<Char> = TwoDMap(input.map { it.toCharArray().toList() })
 
-    companion object {
-        val searchWord = "XMAS"
-    }
-
     fun part1() : Int {
+        val searchWord = "XMAS"
         var count = 0
         var y = 0
         while (y < data.getHeight()) {
@@ -39,7 +36,19 @@ class Day04(input: List<String>,
         return count
     }
     fun part2() : Int {
-        return 0
+        var count = 0
+        var y = 0
+        while (y < data.getHeight()) {
+            var x = 0
+            while (x < data.getWidth()) {
+                if (isXMasCenter(x, y)) {
+                    count++
+                }
+                x++
+            }
+            y++
+        }
+        return count
     }
 
     fun isMatch(word: String, x: Int, y: Int, dir: TwoDMap.Direction): Boolean {
@@ -51,5 +60,24 @@ class Day04(input: List<String>,
             step++
         }
         return true
+    }
+    fun isXMasCenter(x: Int, y: Int): Boolean {
+        val mas = "MAS"
+        if (data.get(x, y) != 'A') {
+            return false
+        }
+        var nwse = false
+        var swne = false
+        listOf(mas, mas.reversed()).forEach {
+            if (it[0] == data.getNeighbor(x, y, TwoDMap.Direction.NorthWest)
+                && it[2] == data.getNeighbor(x, y, TwoDMap.Direction.SouthEast)) {
+                nwse = true
+            }
+            if (it[0] == data.getNeighbor(x, y, TwoDMap.Direction.SouthWest)
+                && it[2] == data.getNeighbor(x, y, TwoDMap.Direction.NorthEast)) {
+                swne = true
+            }
+        }
+        return nwse && swne
     }
 }

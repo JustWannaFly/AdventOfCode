@@ -26,6 +26,9 @@ class TwoDMap<E>(data: List<List<E>>) {
     fun get(x: Int, y: Int): E {
         return data[y][x]
     }
+    fun getNeighbor(x: Int, y: Int, direction: Direction): E? {
+        return getNeighbor(x, y, direction, 1)
+    }
     fun getNeighbor(x: Int, y: Int, direction: Direction, step: Int): E? {
         if (!hasNeighbor(x, y, direction, step)) {
             return null

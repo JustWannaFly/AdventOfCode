@@ -24,6 +24,6 @@ class Day04Test {
 
 @Test
  fun part2() {
-  kotlin.test.assertEquals(0, Day04(input).part2())
+  kotlin.test.assertEquals(9, Day04(input).part2())
  }
 }
