@@ -51,6 +51,9 @@ class TwoDMap<E>(data: List<List<E>>) {
         val neighborCoords = getNeighborCoords(x, y, direction, step)
         return get(neighborCoords.first, neighborCoords.second)
     }
+    fun hasNeighbor(x: Int, y: Int, direction: Direction): Boolean {
+        return hasNeighbor(x, y, direction, 1)
+    }
     fun hasNeighbor(x: Int, y: Int, direction: Direction, step: Int): Boolean {
         if ((direction == Direction.North
                     || direction == Direction.NorthEast
@@ -73,6 +76,9 @@ class TwoDMap<E>(data: List<List<E>>) {
             return false
         }
         return true
+    }
+    fun count(check: (E) -> Boolean): Int {
+        return data.sumOf { row -> row.filter { check(it) }.size }
     }
 
     enum class Direction {
