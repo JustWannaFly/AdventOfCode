@@ -13,25 +13,43 @@ fun main() {
 
 class Day11(private val input: List<String>) {
 
-    fun part1(): Int {
+    fun part1(): Long {
         val rocks = input[0].split(' ').map { it.toLong() }
         return stepNTimesCount(rocks, 25)
     }
 
-    fun part2(): Int {
+    fun part2(): Long {
         val rocks = input[0].split(' ').map { it.toLong() }
         return stepNTimesCount(rocks, 75)
     }
-    fun stepNTimesCount(initial: List<Long>, steps: Int): Int {
-        var rocks = initial
+    fun stepNTimesCount(initial: List<Long>, steps: Long): Long {
+        var numCounts = mutableMapOf<Long, Long>()
+        initial.forEach {
+            if (numCounts.containsKey(it)) {
+                numCounts[it] = numCounts[it]!! + 1
+            } else {
+                numCounts[it] = 1
+            }
+        }
         var i = 0
         while (i < steps) {
-            val steppedRocks = mutableListOf<Long>()
-            rocks.forEach{ steppedRocks.addAll(stepNum(it)) }
-            rocks = steppedRocks
+            val mulStepped = numCounts.keys.map { Pair(stepNum(it), numCounts[it]!!) }
+            numCounts = mutableMapOf()
+            mulStepped.forEach { listMulPair ->
+                listMulPair.first.forEach {
+                    if (numCounts.containsKey(it)) {
+                        numCounts[it] = numCounts[it]!! + listMulPair.second
+                    } else {
+                        numCounts[it] = listMulPair.second
+                    }
+                }
+            }
+            if (numCounts.values.sum()< 0) {
+                println("whoops we went negative. make it a long")
+            }
             i++
         }
-        return rocks.size
+        return numCounts.values.sum()
     }
     fun stepNum(num: Long): List<Long> {
         if (num == 0L) return listOf(1)
