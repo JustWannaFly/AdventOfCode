@@ -26,6 +26,21 @@ class TwoDMap<E>(data: List<List<E>>) {
     fun get(x: Int, y: Int): E {
         return data[y][x]
     }
+    fun getNeighborCoords(x: Int, y: Int, direction: Direction): Pair<Int, Int> {
+        return getNeighborCoords(x, y, direction, 1)
+    }
+    fun getNeighborCoords(x: Int, y: Int, direction: Direction, step: Int): Pair<Int, Int> {
+        return when (direction) {
+            Direction.North -> Pair(x, y-step)
+            Direction.NorthEast -> Pair(x+step, y-step)
+            Direction.East -> Pair(x+step, y)
+            Direction.SouthEast -> Pair(x+step, y+step)
+            Direction.South -> Pair(x, y+step)
+            Direction.SouthWest -> Pair(x-step, y+step)
+            Direction.West -> Pair(x-step, y)
+            Direction.NorthWest -> Pair(x-step,y-step)
+        }
+    }
     fun getNeighbor(x: Int, y: Int, direction: Direction): E? {
         return getNeighbor(x, y, direction, 1)
     }
@@ -33,16 +48,8 @@ class TwoDMap<E>(data: List<List<E>>) {
         if (!hasNeighbor(x, y, direction, step)) {
             return null
         }
-        return when (direction) {
-            Direction.North -> get(x, y-step)
-            Direction.NorthEast -> get(x+step, y-step)
-            Direction.East -> get(x+step, y)
-            Direction.SouthEast -> get(x+step, y+step)
-            Direction.South -> get(x, y+step)
-            Direction.SouthWest -> get(x-step, y+step)
-            Direction.West -> get(x-step, y)
-            Direction.NorthWest -> get(x-step,y-step)
-        }
+        val neighborCoords = getNeighborCoords(x, y, direction, step)
+        return get(neighborCoords.first, neighborCoords.second)
     }
     fun hasNeighbor(x: Int, y: Int, direction: Direction, step: Int): Boolean {
         if ((direction == Direction.North

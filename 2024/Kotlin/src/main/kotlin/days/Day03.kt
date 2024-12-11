@@ -5,7 +5,6 @@ import com.github.justwannafly.Utilities
 fun main() {
     println("---${Utilities.INTRO} Day 03---")
     val input: List<String> = Utilities.readResource("03")
-        ?: error("unable to read input")
     val day3 = Day03(input)
     println("Part 1: ${day3.part1()}")
     println("Part 2: ${day3.part2()}")

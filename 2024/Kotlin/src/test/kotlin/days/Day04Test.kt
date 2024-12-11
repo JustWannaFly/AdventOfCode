@@ -1,3 +1,5 @@
+package days
+
 import com.github.justwannafly.days.Day04
 import org.junit.jupiter.api.Test
 
