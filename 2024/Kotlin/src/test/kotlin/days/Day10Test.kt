@@ -22,6 +22,6 @@ import org.junit.jupiter.api.Assertions.*
 
 @Test
  fun part2() {
- kotlin.test.assertEquals(0, Day10(input).part2())
+ kotlin.test.assertEquals(81, Day10(input).part2())
  }
 }

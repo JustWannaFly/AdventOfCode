@@ -38,7 +38,31 @@ class Day10(
         return sum
     }
     fun part2(): Int {
-        return 0
+        var sum = 0
+        var y = 0
+        while (y < data.getHeight()) {
+            var x = 0
+            while (x < data.getWidth()) {
+                if (data.get(x, y) == 0) {
+                    sum += getUniquePathsToPeak(x, y)
+                }
+                x++
+            }
+            y++
+        }
+        return sum
+    }
+    fun getUniquePathsToPeak(x: Int, y: Int): Int {
+        val stop = data.get(x, y)
+        if (stop == 9) return 1
+        var score = 0
+        cardinalDirs.forEach {
+            if (data.getNeighbor(x, y, it) == stop + 1) {
+                val neighborCoords = data.getNeighborCoords(x, y, it)
+                score += getUniquePathsToPeak(neighborCoords.first, neighborCoords.second)
+            }
+        }
+        return score
     }
     fun getConnectedPeakCoords(x: Int, y: Int): Set<Pair<Int, Int>> {
         val stop = data.get(x, y)
