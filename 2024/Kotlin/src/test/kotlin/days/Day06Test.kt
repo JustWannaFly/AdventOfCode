@@ -24,6 +24,6 @@ import org.junit.jupiter.api.Assertions.*
 
 @Test
  fun part2() {
- assertEquals(0, Day06(testData).part2())
+ assertEquals(6, Day06(testData).part2())
  }
 }

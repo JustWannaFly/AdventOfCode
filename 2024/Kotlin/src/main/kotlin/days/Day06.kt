@@ -12,13 +12,21 @@ fun main() {
     println("Part 2: ${day5.part2()}")
 }
 
-class Day06(data: List<String>) {
-    private val map = TwoDMap(data.map { row: String -> row.map {Space(it)} })
-    private val guard = Guard(
+class Day06(private val data: List<String>) {
+    private var map = TwoDMap(data.map { row: String -> row.map {Space(it)} })
+    private var guard = Guard(
         x = data.find { it.contains('^')}!!.indexOf('^'),
         y = data.indexOf(data.find { it.contains('^') }!!),
         dir = Direction.North
     )
+    fun resetMap() {
+        map = TwoDMap(data.map { row: String -> row.map {Space(it)} })
+        guard = Guard(
+            x = data.find { it.contains('^')}!!.indexOf('^'),
+            y = data.indexOf(data.find { it.contains('^') }!!),
+            dir = Direction.North
+        )
+    }
 
     fun part1(): Int {
         var nextSpace = map.getNeighbor(guard.x, guard.y, guard.dir)
@@ -27,26 +35,59 @@ class Day06(data: List<String>) {
                 guard.setLocation(map.getNeighborCoords(guard.x, guard.y, guard.dir))
                 map.get(guard.x, guard.y).passed = true
             } else {
-                when (guard.dir) {
-                    Direction.North -> { guard.dir = Direction.East }
-                    Direction.East -> { guard.dir = Direction.South }
-                    Direction.South -> { guard.dir = Direction.West }
-                    Direction.West -> { guard.dir = Direction.North }
-                    else -> throw RuntimeException("Unexpected direction")
-                }
+                turnGuard()
             }
             nextSpace = map.getNeighbor(guard.x, guard.y, guard.dir)
         }
         return map.count { it.passed }
     }
-
     fun part2(): Int {
-        return 0
+        var loopCount = 0
+
+        var y = 0
+        while (y < map.getHeight()) {
+            var x = 0
+            while (x < map.getWidth()) {
+                if (map.get(x, y).canWalk) {
+                    resetMap()
+                    map.get(x, y).canWalk = false
+                    var nextSpace = map.getNeighbor(guard.x, guard.y, guard.dir)
+                    while (nextSpace != null) {
+                        if (nextSpace.passed && nextSpace.passedDirs.contains(guard.dir)) {
+                            loopCount++
+                            break
+                        } else if (nextSpace.canWalk) {
+                            guard.setLocation(map.getNeighborCoords(guard.x, guard.y, guard.dir))
+                            map.get(guard.x, guard.y).passed = true
+                            map.get(guard.x, guard.y).passedDirs.add(guard.dir)
+                        } else {
+                            turnGuard()
+                        }
+                        nextSpace = map.getNeighbor(guard.x, guard.y, guard.dir)
+                    }
+                }
+                x++
+            }
+            y++
+        }
+        return loopCount
+    }
+
+
+    private fun turnGuard() {
+        when (guard.dir) {
+            Direction.North -> { guard.dir = Direction.East }
+            Direction.East -> { guard.dir = Direction.South }
+            Direction.South -> { guard.dir = Direction.West }
+            Direction.West -> { guard.dir = Direction.North }
+            else -> throw RuntimeException("Unexpected direction")
+        }
     }
 
     class Space(data: Char) {
         var canWalk = data != '#'
         var passed = data == '^'
+        val passedDirs = mutableSetOf<Direction>()
     }
     class Guard(var x: Int, var y: Int, var dir: Direction) {
         fun setLocation(location: Pair<Int, Int>) {
