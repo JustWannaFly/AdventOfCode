@@ -26,3 +26,4 @@ cabal.project.local~
 Kotlin.iml
 .gradle/
 build/
+2024/Kotlin/src/main/resources/input/
