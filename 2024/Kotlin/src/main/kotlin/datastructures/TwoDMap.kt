@@ -4,6 +4,10 @@ class TwoDMap<E>(data: List<List<E>>) {
 
     private val data: List<List<E>>
 
+    companion object {
+        val cardinals = listOf(Direction.North, Direction.South, Direction.East, Direction.West)
+    }
+
     init {
         if (data.isEmpty()) {
             error("TwoDMap data is empty")
@@ -26,6 +30,9 @@ class TwoDMap<E>(data: List<List<E>>) {
     fun get(x: Int, y: Int): E {
         return data[y][x]
     }
+    fun get(coords: Pair<Int, Int>): E {
+        return get(coords.first, coords.second)
+    }
     fun getNeighborCoords(x: Int, y: Int, direction: Direction): Pair<Int, Int> {
         return getNeighborCoords(x, y, direction, 1)
     }
@@ -40,6 +47,9 @@ class TwoDMap<E>(data: List<List<E>>) {
             Direction.West -> Pair(x-step, y)
             Direction.NorthWest -> Pair(x-step,y-step)
         }
+    }
+    fun getNeighborCoords(x: Int, y: Int, dirs: List<Direction>): List<Pair<Int, Int>> {
+        return dirs.mapNotNull { if (hasNeighbor(x, y, it)) getNeighborCoords(x, y, it) else null }
     }
     fun getNeighbor(x: Int, y: Int, direction: Direction): E? {
         return getNeighbor(x, y, direction, 1)
@@ -77,6 +87,9 @@ class TwoDMap<E>(data: List<List<E>>) {
         }
         return true
     }
+    fun getNeighbors(x: Int, y: Int, directions: List<Direction>): List<E> {
+        return directions.mapNotNull { getNeighbor(x, y, it) }
+    }
     fun count(check: (E) -> Boolean): Int {
         return data.sumOf { row -> row.filter { check(it) }.size }
     }
@@ -91,4 +104,5 @@ class TwoDMap<E>(data: List<List<E>>) {
         West,
         NorthWest,
     }
+
 }
