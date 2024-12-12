@@ -1,7 +1,6 @@
 package com.github.justwannafly.days
 
 import com.github.justwannafly.Utilities
-import kotlin.math.pow
 
 
 fun main() {
@@ -14,28 +13,52 @@ fun main() {
 
 class Day07(private val data: List<String>) {
     fun part1(): Long {
-        return data.filter { canRectify(it) }.sumOf { it.split(':')[0].toLong() }
+        return data.filter { canRectify(it, listOf('+', '*')) }.sumOf { it.split(':')[0].toLong() }
     }
     fun part2(): Long {
-        return 0
+        return data.filter { canRectify(it, listOf('+', '*', '|')) }.sumOf { it.split(':')[0].toLong() }
     }
-    fun canRectify(line: String): Boolean {
+    fun canRectify(line: String, ops: List<Char>): Boolean {
         val nums = getNums(line)
         val target = nums.removeFirst()
-        var op = 0
         var working = -1L
-        while (op < 2.0.pow(nums.size - 1) && target != working) {
+        buildPermutations(ops, nums.size - 1).forEach { permutation: List<Char> ->
             working = nums[0]
             var i = 1
             while (i < nums.size) {
-                working = if ((op and 2.0.pow(i-1).toInt()) == 0) working + nums[i] else working * nums[i]
+                working = doOp(working, nums[i], permutation[i - 1])
                 i++
             }
-            op++
+            if (target == working) {
+                return true
+            }
         }
-        return target == working
+        return false
     }
     fun getNums(line: String): MutableList<Long> {
         return line.replace(":", "").split(' ').map { it.toLong() }.toMutableList()
+    }
+    fun doOp(num1: Long, num2: Long, op: Char): Long {
+        return when (op) {
+            '+' -> num1 + num2
+            '*' -> num1 * num2
+            '|' -> (num1.toString() + num2.toString()).toLong()
+            else -> 0L
+        }
+    }
+    fun buildPermutations(ops: List<Char>, numOfOps: Int): List<List<Char>> {
+        if (numOfOps <= 1) {
+            return ops.map{listOf(it)}
+        }
+        val combinedLists = mutableListOf<List<Char>>()
+        val tails = buildPermutations(ops, numOfOps - 1)
+        ops.forEach { op ->
+            tails.forEach { tail ->
+                val workingList = mutableListOf(op)
+                workingList.addAll(tail)
+                combinedLists.add(workingList)
+            }
+        }
+        return combinedLists
     }
 }
