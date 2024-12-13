@@ -7,19 +7,25 @@ import org.junit.jupiter.api.Assertions.*
  class Day12Test {
 
   private val testData = listOf(
-   "AAAA",
-   "BBCD",
-   "BBCC",
-   "EEEC"
+           "RRRRIICCFF",
+           "RRRRIICCCF",
+           "VVRRRCCFFF",
+           "VVRCCCJFFF",
+           "VVVVCJJCFE",
+           "VVIVCCJJEE",
+           "VVIIICJJEE",
+           "MIIIIIJJEE",
+           "MIIISIJEEE",
+           "MMMISSJEEE"
   )
 
 @Test
  fun part1() {
- assertEquals(140, Day12(testData).part1())
+ assertEquals(1930, Day12(testData).part1())
  }
 
 @Test
  fun part2() {
- assertEquals(80, Day12(testData).part2())
+ assertEquals(1206, Day12(testData).part2())
  }
 }

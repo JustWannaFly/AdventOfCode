@@ -5,7 +5,7 @@ class TwoDMap<E>(data: List<List<E>>) {
     private val data: List<List<E>>
 
     companion object {
-        val cardinals = listOf(Direction.North, Direction.South, Direction.East, Direction.West)
+        val cardinals = listOf(Direction.North, Direction.East, Direction.South, Direction.West)
     }
 
     init {
