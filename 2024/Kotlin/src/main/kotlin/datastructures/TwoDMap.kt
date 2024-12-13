@@ -30,6 +30,15 @@ class TwoDMap<E>(data: List<List<E>>) {
     fun get(x: Int, y: Int): E {
         return data[y][x]
     }
+    fun getOrNull(y: Int, x: Int): E? {
+        if (y < 0 || y >= getHeight() || x < 0 || x >= getWidth()) {
+            return null
+        }
+        return get(x, y)
+    }
+    fun getOrNull(coordinates: Pair<Int, Int>): E? {
+        return getOrNull(coordinates.first, coordinates.second)
+    }
     fun get(coords: Pair<Int, Int>): E {
         return get(coords.first, coords.second)
     }
@@ -92,6 +101,17 @@ class TwoDMap<E>(data: List<List<E>>) {
     }
     fun count(check: (E) -> Boolean): Int {
         return data.sumOf { row -> row.filter { check(it) }.size }
+    }
+    fun findAll(thing: E): List<Pair<Int, Int>> {
+        val locations = mutableListOf<Pair<Int, Int>>()
+        for (x: Int in 0 until getWidth()) {
+            for (y: Int in 0 until getHeight()) {
+                if (thing == get(x, y)) {
+                    locations.add(Pair(x, y))
+                }
+            }
+        }
+        return locations
     }
 
     enum class Direction {
