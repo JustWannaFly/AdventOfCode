@@ -27,9 +27,4 @@ class Day13Test {
   fun part1() {
    assertEquals(480, Day13(testData).part1())
   }
-
-  @Test
-  fun part2() {
-   assertEquals(0, Day13(testData).part2())
-  }
  }
