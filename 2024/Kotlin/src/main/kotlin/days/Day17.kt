@@ -12,89 +12,111 @@ fun main() {
 }
 
 class Day17(private val input: List<String>) {
-    var regA = 0
-    var regB = 0
-    var regC = 0
+    var regA = 0L
+    var regB = 0L
+    var regC = 0L
     var instruction = 0
     var programAsString = input[4].split(": ")[1]
-    var program = programAsString.split(",").map { it.toInt() }
+    var program = programAsString.split(",").map { it.toLong() }
     var output = ""
     val ops = mapOf(
-        Pair(0, ::adv),
-        Pair(1, ::bxl),
-        Pair(2, ::bst),
-        Pair(3, ::jnz),
-        Pair(4, ::bxc),
-        Pair(5, ::out),
-        Pair(6, ::bdv),
-        Pair(7, ::cdv)
+        Pair(0L, ::adv),
+        Pair(1L, ::bxl),
+        Pair(2L, ::bst),
+        Pair(3L, ::jnz),
+        Pair(4L, ::bxc),
+        Pair(5L, ::out),
+        Pair(6L, ::bdv),
+        Pair(7L, ::cdv)
     )
     fun part1(): String {
-        init(input[0].split(": ")[1].toInt(), input[1].split(": ")[1].toInt(), input[2].split(": ")[1].toInt())
+        init(input[0].split(": ")[1].toLong(), input[1].split(": ")[1].toLong(), input[2].split(": ")[1].toLong())
         while (instruction < program.size) {
             ops[program[instruction]]?.let { it(program[instruction + 1]) }
             instruction += 2
         }
         return output
     }
-    fun part2(): Int {
-        var a = -1
-        var closest = ""
-        while (output != programAsString) {
-            a++
-            init(a, 0, 0)
-            while (instruction < program.size && programAsString.startsWith(output)) {
-                ops[program[instruction.toInt()]]?.let { it(program[instruction.toInt() + 1].toInt()) }
-                instruction += 2
+    fun part2(): Long {
+        var a = 0L
+        var builtOutput = ""
+        program.reversed().forEach {
+            a = a.shl(3)
+            if (builtOutput.isNotEmpty()) {
+                builtOutput = "$it,$builtOutput"
+            } else {
+                builtOutput = "$it"
             }
-            if (output.length > closest.length) {
-                closest = output
+            var i = 0
+            var foundOne = false
+            while (i <= 7 && ! foundOne) {
+                val workingA = a + i
+                init(workingA, 0L, 0L)
+                while (instruction < program.size && output.length <= builtOutput.length) {
+                    ops[program[instruction]]?.let { it(program[instruction + 1]) }
+                    instruction += 2
+                }
+                if (output == builtOutput) {
+                    a = workingA
+                    foundOne = true
+                }
+                i++
+            }
+            if (!foundOne) {
+                error("no match found to build output: $builtOutput, a: $a")
             }
         }
+        init(a, 0L, 0L)
+        while (instruction < program.size) {
+            ops[program[instruction]]?.let { it(program[instruction + 1]) }
+            instruction += 2
+        }
+        println(output)
+        println(programAsString)
         return a
     }
-    fun adv(cmb: Int) {
-        regA /= 2.0.pow(combo(cmb).toDouble()).toInt()
+    fun adv(cmb: Long) {
+        regA = regA.shr(cmb.toInt())
     }
-    fun bxl(lit: Int) {
+    fun bxl(lit: Long) {
         regB = regB.xor(lit)
     }
-    fun bst(cmb: Int) {
+    fun bst(cmb: Long) {
         regB = combo(cmb) % 8
     }
-    fun jnz(lit: Int) {
-        if (regA != 0) {
-            instruction = lit - 2
+    fun jnz(lit: Long) {
+        if (regA != 0L) {
+            instruction = lit.toInt() - 2
         }
     }
-    fun bxc(unused: Int) {
+    fun bxc(unused: Long) {
         regB = regB.xor(regC)
     }
-    fun out(cmb: Int) {
+    fun out(cmb: Long) {
         if (output.isNotEmpty()) {
             output += ","
         }
         output += (combo(cmb) % 8).toString()
     }
-    fun bdv(cmb: Int) {
-        regB = regA / 2.0.pow(combo(cmb).toDouble()).toInt()
+    fun bdv(cmb: Long) {
+        regB = regA.shr(cmb.toInt())
     }
-    fun cdv(cmb: Int) {
-        regC = regA / 2.0.pow(combo(cmb).toDouble()).toInt()
+    fun cdv(cmb: Long) {
+        regC = regA.shr(cmb.toInt())
     }
-    fun combo(combo: Int): Int {
+    fun combo(combo: Long): Long {
         return when (combo) {
-            0 -> 0
-            1 -> 1
-            2 -> 2
-            3 -> 3
-            4 -> regA
-            5 -> regB
-            6 -> regC
+            0L -> 0
+            1L -> 1
+            2L -> 2
+            3L -> 3
+            4L -> regA
+            5L -> regB
+            6L -> regC
             else -> error("invalid combo operator")
         }
     }
-    fun init(a: Int, b: Int, c: Int) {
+    fun init(a: Long, b: Long, c: Long) {
         regA = a
         regB = b
         regC = c
