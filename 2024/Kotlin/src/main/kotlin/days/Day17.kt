@@ -38,42 +38,40 @@ class Day17(private val input: List<String>) {
         return output
     }
     fun part2(): Long {
-        var a = 0L
+        var aSet = mutableSetOf(0L)
         var builtOutput = ""
-        program.reversed().forEach {
-            a = a.shl(3)
+        program.reversed().forEach { outputChar ->
             if (builtOutput.isNotEmpty()) {
-                builtOutput = "$it,$builtOutput"
+                builtOutput = "$outputChar,$builtOutput"
             } else {
-                builtOutput = "$it"
+                builtOutput = "$outputChar"
             }
-            var i = 0
-            var foundOne = false
-            while (i <= 7 && ! foundOne) {
-                val workingA = a + i
-                init(workingA, 0L, 0L)
-                while (instruction < program.size && output.length <= builtOutput.length) {
-                    ops[program[instruction]]?.let { it(program[instruction + 1]) }
-                    instruction += 2
+            val workingASet = mutableSetOf<Long>()
+            aSet.forEach {
+                var i = 0
+                while (i <= 7) {
+                    val workingA = it.shl(3) + i
+                    init(workingA, 0L, 0L)
+                    while (instruction < program.size && output.length <= builtOutput.length) {
+                        ops[program[instruction]]?.let { it(program[instruction + 1]) }
+                        instruction += 2
+                    }
+                    if (output == builtOutput) {
+                        workingASet.add(workingA)
+                    }
+                    i++
                 }
-                if (output == builtOutput) {
-                    a = workingA
-                    foundOne = true
-                }
-                i++
             }
-            if (!foundOne) {
-                error("no match found to build output: $builtOutput, a: $a")
-            }
+            aSet = workingASet
         }
-        init(a, 0L, 0L)
+        init(aSet.min(), 0L, 0L)
         while (instruction < program.size) {
             ops[program[instruction]]?.let { it(program[instruction + 1]) }
             instruction += 2
         }
         println(output)
         println(programAsString)
-        return a
+        return aSet.min()
     }
     fun adv(cmb: Long) {
         regA = regA.shr(cmb.toInt())
