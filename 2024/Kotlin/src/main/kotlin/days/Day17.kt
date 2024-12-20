@@ -9,6 +9,7 @@ fun main() {
     val day17 = Day17(input)
     println("Part 1: ${day17.part1()}")
     println("Part 2: ${day17.part2()}")
+//    println("Part 2 brute force: ${day17.part2BruitForce()}")
 }
 
 class Day17(private val input: List<String>) {
@@ -64,14 +65,32 @@ class Day17(private val input: List<String>) {
             }
             aSet = workingASet
         }
-        init(aSet.min(), 0L, 0L)
+        val min = aSet.min() ?: 0L
+        init(min, 0L, 0L)
         while (instruction < program.size) {
             ops[program[instruction]]?.let { it(program[instruction + 1]) }
             instruction += 2
         }
         println(output)
         println(programAsString)
-        return aSet.min()
+        return min
+    }
+
+    fun part2BruitForce(): Long {
+        var a = -1L
+        var closest = ""
+        while (output != programAsString) {
+            a++
+            init(a, 0, 0)
+            while (instruction < program.size && programAsString.startsWith(output)) {
+                ops[program[instruction]]?.let { it(program[instruction + 1]) }
+                instruction += 2
+            }
+            if (output.length > closest.length) {
+                closest = output
+            }
+        }
+        return a
     }
     fun adv(cmb: Long) {
         regA = regA.shr(cmb.toInt())
