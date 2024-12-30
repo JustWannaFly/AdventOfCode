@@ -2,7 +2,7 @@ package com.github.justwannafly.datastructures
 
 class TwoDMap<E>(data: List<List<E>>) {
 
-    private val data: List<List<E>>
+    private val data: MutableList<MutableList<E>>
 
     companion object {
         val cardinals = listOf(Direction.North, Direction.East, Direction.South, Direction.West)
@@ -17,10 +17,15 @@ class TwoDMap<E>(data: List<List<E>>) {
             error("TwoDMap data is not constant width")
             }
         }
-        this.data = data
+        this.data = data.map{ it.toMutableList() }.toMutableList()
     }
 
-
+    fun set(coords: Pair<Int, Int>, thing: E) {
+        set(coords.first, coords.second, thing)
+    }
+    fun set(x: Int, y: Int, thing: E) {
+        data[y][x] = thing
+    }
     fun getWidth(): Int {
         return data[0].size
     }
@@ -42,6 +47,12 @@ class TwoDMap<E>(data: List<List<E>>) {
     fun get(coords: Pair<Int, Int>): E {
         return get(coords.first, coords.second)
     }
+    fun getNeighborCoords(coords: Pair<Int, Int>, dir: Direction): Pair<Int, Int> {
+        return getNeighborCoords(coords, dir, 1)
+    }
+    fun getNeighborCoords(coords: Pair<Int, Int>, direction: Direction, step: Int): Pair<Int, Int> {
+        return getNeighborCoords(coords.first, coords.second, direction, step)
+    }
     fun getNeighborCoords(x: Int, y: Int, direction: Direction): Pair<Int, Int> {
         return getNeighborCoords(x, y, direction, 1)
     }
@@ -59,6 +70,12 @@ class TwoDMap<E>(data: List<List<E>>) {
     }
     fun getNeighborCoords(x: Int, y: Int, dirs: List<Direction>): List<Pair<Int, Int>> {
         return dirs.mapNotNull { if (hasNeighbor(x, y, it)) getNeighborCoords(x, y, it) else null }
+    }
+    fun getNeighbor(coords: Pair<Int, Int>, direction: Direction): E? {
+        return getNeighbor(coords.first, coords.second, direction)
+    }
+    fun getNeighbor(coords: Pair<Int, Int>, direction: Direction, step: Int): E? {
+        return getNeighbor(coords.first, coords.second, direction, step)
     }
     fun getNeighbor(x: Int, y: Int, direction: Direction): E? {
         return getNeighbor(x, y, direction, 1)
